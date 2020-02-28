@@ -1,0 +1,9 @@
+<NotepadPlus>
+    <Project name="hueCommands">
+        <File name="octoprint_huecommands\__init__.py" />
+        <File name="octoprint_huecommands\templates\huecommands_settings.jinja2" />
+        <File name="octoprint_huecommands\templates\huecommands_sidebar.jinja2" />
+        <File name="octoprint_huecommands\static\js\huecommands.js" />
+        <File name="C:\Users\Heiko\AppData\Roaming\OctoPrint\config.yaml" />
+    </Project>
+</NotepadPlus>

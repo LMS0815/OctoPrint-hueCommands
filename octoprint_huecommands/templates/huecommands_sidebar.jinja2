@@ -1,0 +1,26 @@
+<!-- ko if: $root.connected() -->
+<table style="width: 100%">
+	<tr style="valign: middle; padding: 5px; margin: 0;" data-bind="style: {'border': connected() ? '1px solid green' : '1px solid red','padding': '10px 10px'}">
+		<th colspan="2" >
+			HUE&nbsp;<input id="hueAction" style="padding: 0; margin: 0; width: 14em;" type="text" oninput="this.value = (this.value || '').toUpperCase();" data-bind="value: cli, enable: connected" title="hue CLI command">
+			<button style="padding: 0; margin: 0;" class="btn btn-mini icon-asterisk" data-bind="click: function(){$root.callCLI(''+$root.cli());}, enable: connected" title="Send hue CLI"></button>
+			<!-- ko if: $root.error() --><h4 data-bind="text: $root.error()"></h4><!-- /ko -->
+		</th>
+	 </tr>
+	<tr>
+		<td data-bind="foreach: presets" style="vertical-align: top;">
+			<!-- ko ifnot: $data.isgroup() -->
+				<button class="btn btn-mini btn-info" data-bind="visible: ($data.resid() > 0), click: function(){$root.callCLI('$'+$data.id());}, text: id, enable: $root.connected()" ></button>
+			<!-- /ko -->
+		</td>
+		<td data-bind="foreach: presets" style="vertical-align: top;">
+			<!-- ko if: $data.isgroup() -->
+				<button class="btn btn-mini btn-warning" data-bind="visible: ($data.resid() > 0), click: function(){$root.callCLI('$'+$data.id());}, text: id, enable: $root.connected()" ></button>
+			<!-- /ko -->
+		</td>
+	 </tr>
+</table>
+<!-- /ko -->
+<!-- ko ifnot: ( !$root.connected() && $root.error()) -->
+	<h4 data-bind="text: $root.error()"></h4>
+<!-- /ko -->
