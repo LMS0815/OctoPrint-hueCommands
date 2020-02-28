@@ -10,7 +10,7 @@
 	<tr>
 		<td data-bind="foreach: presets" style="vertical-align: top;">
 			<!-- ko ifnot: $data.isgroup() -->
-				<button class="btn btn-mini btn-info" data-bind="visible: ($data.resid() > 0), click: function(){$root.callCLI('$'+$data.id());}, text: id, enable: $root.connected()" ></button>
+				<button class="btn btn-mini btn-primary" data-bind="visible: ($data.resid() > 0), click: function(){$root.callCLI('$'+$data.id());}, text: id, enable: $root.connected()" ></button>
 			<!-- /ko -->
 		</td>
 		<td data-bind="foreach: presets" style="vertical-align: top;">

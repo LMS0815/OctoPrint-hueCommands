@@ -62,7 +62,7 @@
 		</thead>
 		<tbody  data-bind="foreach: { data: presets, as: 'preset', noChildContext: true }">
 			<tr>
-				<td style="text-align: center; padding: 0;"><input style="width: 6em;" type="text" oninput="this.value = (this.value || '').toUpperCase();" data-bind="value: id, class: 'btn', css: {'btn-warning': preset.isgroup(), 'btn-info': !preset.isgroup() }, style: {'font-weight': preset.isgroup() ? 'bold' : 'normal', 'background-color': preset.isgroup() ? '#FFCC99' : 'normal'}" title="{{ _('Set unique preset ID') }}"></td>
+				<td style="text-align: center; padding: 0;"><input style="width: 6em; color: black;" type="text" oninput="this.value = (this.value || '').toUpperCase();" data-bind="value: id, class: 'btn', css: {'btn-warning': preset.isgroup(), 'btn-primary': !preset.isgroup() }, style: {'font-weight': preset.isgroup() ? 'bold' : 'normal', 'background-color': preset.isgroup() ? '#FFCC99' : 'normal'}" title="{{ _('Set unique preset ID') }}"></td>
 				<td style="text-align: center; padding: 0;">
 					<input style="width: 1em;" type="checkbox" data-bind="checked: isgroup">
 					<!-- ko if: $root.connected() -->
@@ -88,7 +88,7 @@
 				<td style="text-align: right; width: 3em; valign: middle;">
 					<button style="padding: 0; margin: 0;"
 							class="btn btn-mini icon-asterisk"
-							data-bind="css: {'btn-warning': preset.isgroup(), 'btn-info': !preset.isgroup() },
+							data-bind="css: {'btn-warning': preset.isgroup(), 'btn-primary': !preset.isgroup() },
 							click: function(){
 								$root.callCLI(	(preset.resid()?(preset.isgroup()?'G':'L') + preset.resid():'') +
 										(preset.color()!='#000000'?' '+preset.color():' K'+preset.kelvin()+' %'+preset.bri())+
