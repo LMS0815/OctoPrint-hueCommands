@@ -25,7 +25,7 @@ from colorsys import rgb_to_hsv # https://docs.python.org/2/library/colorsys.htm
 from qhue import Bridge, QhueException # https://github.com/quentinsf/qhue
 
 
-__author__ = 'LMS0815 <8235214+LMS0815@users.noreply.github.com>'
+__author__ = 'LMS0815'
 __license__ = 'AGPLv3'
 __copyright__ = 'Copyright (C) 2019 LMS0815 - Released under terms of the ' + __license__ + ' License'
 __description__ = gettext('Illuminate your print job and signal its status using a Philips Hue light. Enter a GCODE equivalent anywhere you want.')
