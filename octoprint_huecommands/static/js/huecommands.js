@@ -254,6 +254,22 @@ $(function() {
 			return true;
 		};
 
+		// ------------------------------------------------------------------------------------------------------------------------
+		// Settings handler
+		self.onSettingsShown = function() {
+			self.settingsBeenShown = true;
+			$('#HGCReportBug').off('click').on('click',function(){
+				$(this).find('i').toggleClass('skull-crossbones bug');
+				url = 'https://github.com/LMS0815/OctoPrint-hueCommands/issues/new';
+				var body = "[\n ENTER DESCRIPTION HERE- ALSO ADD SCREENSHOT IF POSSIBLE!\n Describe your problem?\n What is the problem?\n Can you recreate it?\n Did you try disabling plugins?\n Did you remeber to update the subject?\n]\n\n**Plugins installed:**\n";
+				$(Object.entries(OctoPrint.coreui.viewmodels.settingsViewModel.settings.plugins)).each(function(x,item){
+					body += '- ' + item[0] + "\n";
+				})
+				body += "\n\n**Software versions:**\n- "+$('#footer_version li').map(function(){return $(this).text()}).get().join("\n- ");
+				window.open(url+'?body='+encodeURI(body),'UICBugReport');
+				$(this).blur();
+			});
+		}
 
 	}
 
