@@ -3,6 +3,8 @@ This Plugin was inspired by [GCODE System Commands Plugin](https://plugins.octop
 Instead of executing local system commands you control your [Philips hue](https://www.meethue.com/) resources.
 
 ## Version 0.2.4
+Fixed issues with Ocroprint 1.5.x
+Minor UI improvements
 
 ## Features
 * Configure presets with colors, assigned resources (Light and/or Groups) and timing.
