@@ -1,6 +1,6 @@
 <!-- ko if: $root.connected() -->
 <table style="width: 100%">
-	<tr style="valign: middle; padding: 5px; margin: 0;" data-bind="style: {'border': connected() ? '1px solid green' : '1px solid red','padding': '10px 10px'}">
+	<tr style="text-align: left; valign: middle; padding: 5px; margin: 0;" data-bind="style: {'border': connected() ? '1px solid green' : '1px solid red','padding': '10px 10px'}">
 		<th colspan="2" >
 			HUE&nbsp;<input id="hueAction" style="padding: 0; margin: 0; width: 14em;" type="text" oninput="this.value = (this.value || '').toUpperCase();" data-bind="value: cli, enable: connected" title="hue CLI command">
 			<button style="padding: 0; margin: 0;" class="btn btn-mini icon-asterisk" data-bind="click: function(){$root.callCLI(''+$root.cli());}, enable: connected" title="Send hue CLI"></button>
