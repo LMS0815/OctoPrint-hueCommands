@@ -1,273 +1,290 @@
-<script type="text/html" id="btn-help">
-	<button style="width: 8em;" class="btn btn-small" data-bind="click: function(){$root.createUser();}, text:$data" title="{{ _('clich for action') }}"></button>
-</script>
-
-
 <form class="form-horizontal">
-
-
-	<h3>hue GCODE Commands {{ _('settings')|edq }}</h3>
-	<h4>hue {{ _('Bridge parameter') }}</h4>
-	<div data-bind="style: {'border': connected() ? '1px solid green' : '1px solid red',
-							'padding': '0 0 0 0',
-							'width': '95%'}">
-		<div class="row-fluid">
-			<label style="margin: 2px 4px 2px 0; width: 8em;" class="control-label">{{ _('Bridge address') }}</label>
-			<!-- ko ifnot: $root.hue_bridges().length -->
-				<input style="margin: 2px 0 2px 0; width: 30em;" type="text" data-bind="value: bridgeaddr">
-			<!-- /ko -->
-			<!-- ko if: $root.hue_bridges().length -->
-				<select style="margin: 2px 0 2px 0; width: 31em;" type="text" size="1"
-						data-bind="	value: bridgeaddr,
-									options: $root.hue_bridges(),
-									optionsValue: 'ip',
-									optionsText: 'name',
-									optionsCaption: '--- select address ---',
-									valueAllowUnset: true">
-				</select>
-			<!-- /ko -->
-			<span data-bind="template: { name: 'btn-help',  data: '{{ _('DISCOVER') }}' }, visible: !$root.bridgeaddr()"></span>
+    <ul class="nav nav-pills">
+        <li class="active">
+            <a data-toggle="tab" href="#settings_huecommands_preset">{{ _('Preset defninitions') }}</a>
+        </li>
+        <li>
+            <a data-toggle="tab" href="#settings_huecommands_settings">{{ _('Bridge settings')|edq }}</a>
+        </li>
+        <li>
+            <a data-toggle="tab" href="#settings_huecommands_usage">{{ _('CLI usage') }}</a>
+        </li>
+        <li>
+            <a data-toggle="tab" href="#settings_huecommands_examples">{{ _('CLI examples') }}</a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="settings_huecommands_preset">
+			<h4>{{ _('Preset defninitions') }}: hue $<i>PRESET</i></h4>
+				<fieldset>
+					<table width="100%">
+						<thead>
+							<tr style="background-color: #f2f2f2;">
+								<th style="width: 8em;">Preset<br>use: hue $...</th>
+								<th style="">Group / ID<br>1 - 255</th>
+								<th style="width: 4em;">Color<br><i>click</i></th>
+								<th style="width: 5em;">Color temp.<br>(Kelvin)</th>
+								<th style="width: 10em;">Bright<br>1&#37; - 100&#37;</th>
+								<th style="width: 6em;">Transition<br>time (sec)</th>
+								<th style="width: 5em;">Action
+									<!-- ko ifnot: $root.presets().length -->
+										<button style="padding: 0; margin: 0;" class="btn btn-mini btn-primary icon-plus" data-bind="click: function(){$root.PresetAdd(0,0);}" title="{{ _('Add Command Definition') }}"></button>
+									<!-- /ko -->
+								</th>
+							</tr>
+						</thead>
+						<tbody  data-bind="foreach: presets">
+							<tr>
+								<td style="text-align: center; padding: 0;"><input style="width: 6em; color: black;" type="text" oninput="this.value = (this.value || '').toUpperCase();" data-bind="value: id, class: 'btn', css: {'btn-warning': $data.isgroup(), 'btn-primary': !$data.isgroup() }, style: {'font-weight': $data.isgroup() ? 'bold' : 'normal', 'background-color': $data.isgroup() ? '#FFCC99' : 'normal'}" title="{{ _('Set unique $parent ID') }}"></td>
+								<td style="text-align: center; padding: 0;">
+									<input style="width: 1em;" type="checkbox" data-bind="checked: isgroup">
+									<!-- ko if: $root.connected() -->
+										<select oninput="this.value = Math.abs(parseInt(this.value || 0));"
+												style="width: 6em;" type="number" oninput="this.value = Math.abs(parseInt(this.value || 0));"
+												size="1"
+												data-bind="	value: resid,
+															style: {'font-weight': $data.isgroup() ? 'bold' : 'normal'},
+															options: ($data.isgroup()?$root.hue_groups():$root.hue_lights()),
+															optionsValue: 'no',
+															optionsText: 'name',
+															valueAllowUnset: true">
+										</select>
+									<!-- /ko -->
+									<!-- ko ifnot: $root.connected() -->
+										<input style="width: 5em;" type="number" step="1" min="0" max="255" oninput="this.value = Math.abs(parseInt(this.value || 0));" data-bind="value: $data.resid(), style: {'font-weight': $data.isgroup() ? 'bold' : 'normal'}">
+									<!-- /ko -->
+								</td>
+								<td style="text-align: center; padding: 0;"><input style="width: 2em;" type="color" data-bind="value: color, enable: ($data.kelvin()==0 && $data.bri() == 0)" title="{{ _('click to edit color') }}"></td>
+								<td style="text-align: center; padding: 0;"><input style="width: 4em;" type="number" step="100"  min="0" max="6550"   oninput="this.value = Math.abs(parseInt(this.value || 0));" data-bind="value: kelvin, disable: ($data.color()!='#000000'), style: {'font-weight': $data.isgroup() ? 'bold' : 'normal'}" title="{{ _('Set color temperature from 2000K to 6550K') }}"></td>
+								<td style="text-align: center; padding: 0;"><input style="width: 8em;" type="range"  step="0.1"  min="0" max="100"    oninput="this.value = Math.abs(parseInt(this.value || 0));" class="input-mini" data-bind="value: bri, disable: ($data.color()!='#000000')" title="{{ _('Set brightness from 0&#37; to 100&#37;') }}"></td>
+								<td style="text-align: center; padding: 0;"><input style="width: 4em;" type="number" step="0.01" min="0" max="655.35" oninput="this.value = Math.abs(this.value)" data-bind="value: trans, style: {'font-weight': $data.isgroup() ? 'bold' : 'normal'}" title="{{ _('Set transition time from 0.0sec to 6553.5sec') }}"></td>
+								<td style="text-align: right; width: 3em; valign: middle;">
+									<button style="padding: 0; margin: 0;"
+											class="btn btn-mini icon-asterisk"
+											data-bind="css: {'btn-warning': $data.isgroup(), 'btn-primary': !$data.isgroup() },
+											click: function(){
+												$root.callCLI(	($data.resid()?($data.isgroup()?'G':'L') + $data.resid():'') +
+														($data.color()!='#000000'?' '+$data.color():' K'+$data.kelvin()+' %'+$data.bri())+
+														' D'+$data.trans()
+													);}, enable: $root.connected()"
+											title="{{ _('Test $parent') }}"></button>
+									<button style="padding: 0; margin: 0;" class="btn btn-mini icon-arrow-up" data-bind="click: function(){$root.PresetMove($index(),-1);}, enable: $index()" title="{{ _('Move up') }}"></button><!--
+									--><button style="padding: 0; margin: 0;" class="btn btn-mini icon-arrow-down" data-bind="click: function(){$root.PresetMove($index(),1);}, disable: ($index() === ($root.presets().length - 1))" title="{{ _('Move down') }}"></button>
+									<button style="padding: 0; margin: 0;" class="btn btn-mini btn-danger icon-trash" data-bind="click: function(){$root.PresetRemove($data);}" title="{{ _('Remove $parent') }}"></button>
+									<button style="padding: 0; margin: 0;" class="btn btn-mini btn-primary icon-plus" data-bind="click: function(){$root.PresetAdd($index(),-1);}" title="{{ _('Add Command Definition') }}"></button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</fieldset>
 		</div>
-		<div class="row-fluid">
-			<label style="margin: 2px 4px 2px 0; width: 8em;" class="control-label">{{ _('Device name') }}</label>
-			<input style="margin: 2px 0 2px 0; width: 30em;" type="text" data-bind="value: userdevice, disable: $root.username()">
-			<span data-bind="template: { name: 'btn-help',  data: '{{ _('GET NAME') }}' }, visible: !$root.userdevice()"></span>
+        <div class="tab-pane" id="settings_huecommands_settings">
+			<h4>hue {{ _('Bridge settings') }}</h4>
+			<fieldset>
+				<div data-bind="style: {'border': connected() ? '1px solid green' : '1px solid red', 'padding': '0 0 0 0','width': '95%'}">
+					<div class="row-fluid">
+						<label style="margin: 2px 4px 2px 0; width: 8em;" class="control-label">{{ _('Bridge address') }}</label>
+						<!-- ko ifnot: $root.hue_bridges().length -->
+							<input style="margin: 2px 0 2px 0; width: 30em;" type="text" data-bind="value: bridgeaddr">
+						<!-- /ko -->
+						<!-- ko if: $root.hue_bridges().length -->
+							<select style="margin: 2px 0 2px 0; width: 31em;" type="text" size="1"
+									data-bind="	value: bridgeaddr,
+												options: $root.hue_bridges(),
+												optionsValue: 'ip',
+												optionsText: 'name',
+												optionsCaption: '--- select address ---',
+												valueAllowUnset: true">
+							</select>
+						<!-- /ko -->
+						<span data-bind="template: { name: 'btn-help',  data: '{{ _('DISCOVER') }}' }, visible: !$root.bridgeaddr()"></span>
+					</div>
+					<div class="row-fluid">
+						<label style="margin: 2px 4px 2px 0; width: 8em;" class="control-label">{{ _('Device name') }}</label>
+						<input style="margin: 2px 0 2px 0; width: 30em;" type="text" data-bind="value: userdevice, disable: $root.username()">
+						<span data-bind="template: { name: 'btn-help',  data: '{{ _('GET NAME') }}' }, visible: !$root.userdevice()"></span>
+					</div>
+					<div class="row-fluid">
+						<label style="margin: 2px 4px 2px 0; width: 8em;" class="control-label">{{ _('User name') }}</label>
+						<input style="margin: 2px 0 2px 0; width: 30em;" type="password" data-bind="value: username">
+						<span data-bind="template: { name: 'btn-help',  data: '{{ _('CONNECT') }}' }, visible: ( !$root.connected() && $root.bridgeaddr() && $root.userdevice())"></span>
+					</div>
+				</div>
+			</fieldset>
+			<div style="display:none;" id="btn-help">
+				<button style="width: 8em;" class="btn btn-small" data-bind="click: function(){$root.createUser();}, text:$data" title="{{ _('clich for action') }}"></button>
+			</div>
 		</div>
-		<div class="row-fluid">
-			<label style="margin: 2px 4px 2px 0; width: 8em;" class="control-label">{{ _('User name') }}</label>
-			<input style="margin: 2px 0 2px 0; width: 30em;" type="password" data-bind="value: username">
-			<span data-bind="template: { name: 'btn-help',  data: '{{ _('CONNECT') }}' }, visible: ( !$root.connected() && $root.bridgeaddr() && $root.userdevice())"></"></span>
+        <div class="tab-pane" id="settings_huecommands_usage">
+			<h4>{{ _('CLI usage') }}</h4>
+			<table width="100%">
+				<tr>
+					<td style="width:  5em; color:#FF4444; background-color:#f2f2f2;">hue</td>
+					<td style="width: 15em; color:#FF4444; background-color:#f2f2f2;">[$preset]</td>
+					<td rowspan="7">
+						<p>Just enter <code>hue ....</code> anywhere, where you normally would enter a GCODE, to control your hue lighting.</p>
+						<p>For more details see examples below.</p>
+					</td>
+				 </tr>
+				<tr style="color:#FF4444; background-color:#f2f2f2;">
+					<td></td>
+					<td>[[Ln]/[Gn]]</td>
+				</tr>
+				<tr style="color:#FF4444; background-color:#f2f2f2;">
+					<td></td>
+					<td>[[on]/[off]]</td>
+				</tr>
+				<tr style="color:#FF4444; background-color:#f2f2f2;">
+					<td></td>
+					<td>[[Tnnnnn]/[Dnnnn]/[Mhh:mm:ss]]</td>
+				</tr>
+				<tr style="color:#FF4444; background-color:#f2f2f2;">
+					<td></td>
+					<td>[[#nnnnnn]/[Knnnnnn]]</td>
+				</tr>
+				<tr style="color:#FF4444; background-color:#f2f2f2;">
+					<td></td>
+					<td>[[Bbbb]/[&#37;ppp]]</td>
+				</tr>
+				<tr style="color:#FF4444; background-color:#f2f2f2;">
+					<td></td>
+					<td>[[Sbbb]/[Vppp]]</td>
+				</tr>
+			</table>
+			<hr>
+			<table width="100%">
+				<tr>
+					<th colspan="2" style="text-align: center; padding-top: 1em; background-color: #f2f2f2;">Preset</th>
+				</tr>
+				<tr>
+					<td>$preset</td>
+					<td>Preset ID from the list above. Not all values must be set;<br/><i>Zero (0) values are ignored.</i></td>
+				</tr>
+				<tr>
+					<th colspan="2" style="text-align: center; padding-top: 1em; background-color: #f2f2f2;">Device</th>
+				</tr>
+				<tr>
+					<td>Ln</td>
+					<td>Light/Switch number n</td>
+				</tr>
+				<tr>
+					<td>Gn</td>
+					<td>Group number n</td>
+				</tr>
+				<tr>
+					<th colspan="2" style="text-align: center; padding-top: 1em; background-color: #f2f2f2;">State</th>
+				</tr>
+				<tr>
+					<td>on</td>
+					<td>Switch on</td>
+				</tr>
+				<tr>
+					<td>off</td>
+					<td>Switch off</td>
+				</tr>
+				<tr>
+					<th colspan="2" style="text-align: center; padding-top: 1em; background-color: #f2f2f2;">Transitiontime</th>
+				</tr>
+				<tr>
+					<td>Tnnnnn</td>
+					<td>Transitiontime n in 1/10 seconds between 0 and 65535</td>
+				</tr>
+				<tr>
+					<td>Dnnnn.n</td>
+					<td>Duration-/Transitiontime n in seconds between 0 and 6553.5</td>
+				</tr>
+				<tr>
+					<td>Mhh:mm:ss.h</td>
+					<td>Transitiontime in time format between 0:00:00 and 1:49:13.5</td>
+				</tr>
+				<tr>
+					<th colspan="2" style="text-align: center; padding-top: 1em; background-color: #f2f2f2;">Color</th>
+				</tr>
+				<tr>
+					<td>#rrggbb</td>
+					<td>RGB color Red/Green/Blue</td>
+				</tr>
+				<tr>
+					<td>Knnnnnn</td>
+					<td>color temperature n in Kelvin</td>
+				</tr>
+				<tr>
+					<td>Cnnnnnn</td>
+					<td>color temperature n between 0 and 65535</td>
+				</tr>
+				<tr>
+					<th colspan="2" style="text-align: center; padding-top: 1em; background-color: #f2f2f2;">Brightness</th>
+				</tr>
+				<tr>
+					<td>Bbbb</td>
+					<td>Brightness b between 1 and 254</td>
+				</tr>
+				<tr>
+					<td>&#37;ppp.p</td>
+					<td>Brightness p in percent between 0.0 and 100.0</td>
+				</tr>
+				<tr>
+					<th colspan="2" style="text-align: center; padding-top: 1em; background-color: #f2f2f2;">Saturation</th>
+				</tr>
+				<tr>
+					<td>Sbbb</td>
+					<td>Saturation b betreen 0 and 254</td>
+				</tr>
+				<tr>
+					<td>Vppp.p</td>
+					<td>Saturation value p in percent between 0.0 and 100.0</td>
+				</tr>
+				<tr>
+					<th colspan="2" style="text-align: center; padding-top: 1em; background-color: #f2f2f2;">Hue</th>
+				</tr>
+				<tr>
+					<td>Hnnnnnn</td>
+					<td>Hue n between 0 and 65535</td>
+				</tr>
+				<tr>
+					<td>Uppp.p</td>
+					<td>Hue p in percent between 0.0 and 100.0</td>
+				</tr>
+			</table>
+		</div>
+        <div class="tab-pane" id="settings_huecommands_examples">
+			<h4>{{ _('CLI examples') }}</h4>
+			<table width="100%">
+				<tr>
+					<td><code>hue $RED</code></td>
+					<td>Switch on using preset <i>RED</i></td>
+				</tr>
+				<tr>
+					<td><code>hue off $RED</code></td>
+					<td>Switch off using preset <i>RED</i></td>
+				</tr>
+				<tr>
+					<td><code>hue L15 off</code></td>
+					<td>Switch lamp 15 off.</td>
+				</tr>
+				<tr>
+					<td><code>hue L15 D2.5 #000000</code></td>
+					<td>Transition lamp 15 in 2.5 sec to last state.</td>
+				</tr>
+				<tr>
+					<td><code>hue L15 M1 on</code></td>
+					<td>Transition lamp 15 in 1.5 sec to last state.</td>
+				</tr>
+				<tr>
+					<td><code>hue L15 #808080</code></td>
+					<td>Switch Lamp 15 Gray (= 50&#37; White).</td>
+				</tr>
+				<tr>
+					<td><code>hue G8 &#37;50 #FFFFFF</code></td>
+					<td>Switch group 15 to 50&#37; White (= Gray).</td>
+				</tr>
+				<tr>
+					<td><code>hue G8 M1:30 &#37;100 #C0C0C0</code></td>
+					<td>Transition group 15 in 90 sec to 100&#37; Silver (= White).</td>
+				</tr>
+			</table>
 		</div>
 	</div>
-
-
-	<h4>{{ _('Preset defninitions') }}: hue $<i>PRESET</i></h4>
-
-
-	<table width="95%">
-		<thead>
-			<tr style="background-color: #f2f2f2;">
-				<th style="width: 8em;">Preset<br>use: hue $...</th>
-				<th style="">Group / ID<br>1 - 255</th>
-				<th style="width: 4em;">Color<br><i>click</i></th>
-				<th style="width: 5em;">Color temp.<br>(Kelvin)</th>
-				<th style="width: 10em;">Bright<br>1&#37; - 100&#37;</th>
-				<th style="width: 6em;">Transition<br>time (sec)</th>
-				<th style="width: 5em;">Action
-					<!-- ko ifnot: $root.presets().length -->
-						<button style="padding: 0; margin: 0;" class="btn btn-mini btn-primary icon-plus" data-bind="click: function(){$root.PresetAdd(0,0);}" title="{{ _('Add Command Definition') }}"></button>
-					<!-- /ko -->
-				</th>
-			</tr>
-		</thead>
-		<tbody  data-bind="foreach: { data: presets, as: 'preset', noChildContext: true }">
-			<tr>
-				<td style="text-align: center; padding: 0;"><input style="width: 6em; color: black;" type="text" oninput="this.value = (this.value || '').toUpperCase();" data-bind="value: id, class: 'btn', css: {'btn-warning': preset.isgroup(), 'btn-primary': !preset.isgroup() }, style: {'font-weight': preset.isgroup() ? 'bold' : 'normal', 'background-color': preset.isgroup() ? '#FFCC99' : 'normal'}" title="{{ _('Set unique preset ID') }}"></td>
-				<td style="text-align: center; padding: 0;">
-					<input style="width: 1em;" type="checkbox" data-bind="checked: isgroup">
-					<!-- ko if: $root.connected() -->
-						<select oninput="this.value = Math.abs(parseInt(this.value || 0));"
-								style="width: 6em;" type="number" oninput="this.value = Math.abs(parseInt(this.value || 0));"
-								size="1"
-								data-bind="	value: resid,
-											style: {'font-weight': preset.isgroup() ? 'bold' : 'normal'},
-											options: (preset.isgroup()?$root.hue_groups():$root.hue_lights()),
-											optionsValue: 'no',
-											optionsText: 'name',
-											valueAllowUnset: true">
-						</select>
-					<!-- /ko -->
-					<!-- ko ifnot: $root.connected() -->
-						<input style="width: 5em;" type="number" step="1" min="0" max="255" oninput="this.value = Math.abs(parseInt(this.value || 0));" data-bind="value: resid, style: {'font-weight': preset.isgroup() ? 'bold' : 'normal'}">
-					<!-- /ko -->
-				</td>
-				<td style="text-align: center; padding: 0;"><input style="width: 2em;" type="color" data-bind="value: color, enable: (preset.kelvin()==0 && preset.bri() == 0)" title="{{ _('click to edit color') }}"></td>
-				<td style="text-align: center; padding: 0;"><input style="width: 4em;" type="number" step="100" min="0" max="6550" oninput="this.value = Math.abs(parseInt(this.value || 0));" data-bind="value: kelvin, disable: (preset.color()!='#000000'), style: {'font-weight': preset.isgroup() ? 'bold' : 'normal'}" title="{{ _('Set color temperature from 2000K to 6550K') }}"></td>
-				<td style="text-align: center; padding: 0;"><input style="width: 8em;" type="range" step="0.1" min="0" max="100" oninput="this.value = Math.abs(parseInt(this.value || 0));" class="input-mini" data-bind="value: bri, disable: (preset.color()!='#000000')" title="{{ _('Set brightness from 0&#37; to 100&#37;') }}"></td>
-				<td style="text-align: center; padding: 0;"><input style="width: 4em;"  type="number" step="0.01" min="0" max="655.35" oninput="this.value = Math.abs(this.value)" data-bind="value: trans, style: {'font-weight': preset.isgroup() ? 'bold' : 'normal'}" title="{{ _('Set transition time from 0.0sec to 6553.5sec') }}"></td>
-				<td style="text-align: right; width: 3em; valign: middle;">
-					<button style="padding: 0; margin: 0;"
-							class="btn btn-mini icon-asterisk"
-							data-bind="css: {'btn-warning': preset.isgroup(), 'btn-primary': !preset.isgroup() },
-							click: function(){
-								$root.callCLI(	(preset.resid()?(preset.isgroup()?'G':'L') + preset.resid():'') +
-										(preset.color()!='#000000'?' '+preset.color():' K'+preset.kelvin()+' %'+preset.bri())+
-										' D'+preset.trans()
-									);}, enable: $root.connected()"
-							title="{{ _('Test preset') }}"></button>
-					<button style="padding: 0; margin: 0;" class="btn btn-mini icon-arrow-up" data-bind="click: function(){$root.PresetMove($index(),-1);}, enable: $index()" title="{{ _('Move up') }}"></button><!--
-					--><button style="padding: 0; margin: 0;" class="btn btn-mini icon-arrow-down" data-bind="click: function(){$root.PresetMove($index(),1);}, disable: ($index() === ($root.presets().length - 1))" title="{{ _('Move down') }}"></button>
-					<button style="padding: 0; margin: 0;" class="btn btn-mini btn-danger icon-trash" data-bind="click: function(){$root.PresetRemove($data);}" title="{{ _('Remove preset') }}"></button>
-					<button style="padding: 0; margin: 0;" class="btn btn-mini btn-primary icon-plus" data-bind="click: function(){$root.PresetAdd($index(),-1);}" title="{{ _('Add Command Definition') }}"></button>
-				</td>
-			</tr>
-		</tbody>
-	</table>
-
-	<h4>{{ _('CLI usage') }}</h4>
-	<table width="95%">
-		<tr>
-			<td style="width:  5em; color:#FF4444; background-color:#f2f2f2;">hue</td>
-			<td style="width: 15em; color:#FF4444; background-color:#f2f2f2;">[$preset]</td>
-			<td rowspan="7">
-				<p>Just enter <code>hue ....</code> anywhere, where you normally would enter a GCODE, to control your hue lighting.</p>
-				<p>For more details see examples below.</p>
-			</td>
-		 </tr>
-		<tr style="color:#FF4444; background-color:#f2f2f2;">
-			<td></td>
-			<td>[[Ln]/[Gn]]</td>
-		</tr>
-		<tr style="color:#FF4444; background-color:#f2f2f2;">
-			<td></td>
-			<td>[[on]/[off]]</td>
-		</tr>
-		<tr style="color:#FF4444; background-color:#f2f2f2;">
-			<td></td>
-			<td>[[Tnnnnn]/[Dnnnn]/[Mhh:mm:ss]]</td>
-		</tr>
-		<tr style="color:#FF4444; background-color:#f2f2f2;">
-			<td></td>
-			<td>[[#nnnnnn]/[Knnnnnn]]</td>
-		</tr>
-		<tr style="color:#FF4444; background-color:#f2f2f2;">
-			<td></td>
-			<td>[[Bbbb]/[&#37;ppp]]</td>
-		</tr>
-		<tr style="color:#FF4444; background-color:#f2f2f2;">
-			<td></td>
-			<td>[[Sbbb]/[Vppp]]</td>
-		</tr>
-	</table>
-	<br/>
-	<br/>
-	<table style="width:95%;">
-		<tr>
-			<th colspan="2" style="text-align: center; padding-top: 1em; background-color: #f2f2f2;">Preset</th>
-		</tr>
-		<tr>
-			<td>$preset</td>
-			<td>Preset ID from the list above. Not all values must be set;<br/><i>Zero (0) values are ignored.</i></td>
-		</tr>
-		<tr>
-			<th colspan="2" style="text-align: center; padding-top: 1em; background-color: #f2f2f2;">Device</th>
-		</tr>
-		<tr>
-			<td>Ln</td>
-			<td>Light/Switch number n</td>
-		</tr>
-		<tr>
-			<td>Gn</td>
-			<td>Group number n</td>
-		</tr>
-		<tr>
-			<th colspan="2" style="text-align: center; padding-top: 1em; background-color: #f2f2f2;">State</th>
-		</tr>
-		<tr>
-			<td>on</td>
-			<td>Switch on</td>
-		</tr>
-		<tr>
-			<td>off</td>
-			<td>Switch off</td>
-		</tr>
-		<tr>
-			<th colspan="2" style="text-align: center; padding-top: 1em; background-color: #f2f2f2;">Transitiontime</th>
-		</tr>
-		<tr>
-			<td>Tnnnnn</td>
-			<td>Transitiontime n in 1/10 seconds between 0 and 65535</td>
-		</tr>
-		<tr>
-			<td>Dnnnn.n</td>
-			<td>Duration-/Transitiontime n in seconds between 0 and 6553.5</td>
-		</tr>
-		<tr>
-			<td>Mhh:mm:ss.h</td>
-			<td>Transitiontime in time format between 0:00:00 and 1:49:13.5</td>
-		</tr>
-		<tr>
-			<th colspan="2" style="text-align: center; padding-top: 1em; background-color: #f2f2f2;">Color</th>
-		</tr>
-		<tr>
-			<td>#rrggbb</td>
-			<td>RGB color Red/Green/Blue</td>
-		</tr>
-		<tr>
-			<td>Knnnnnn</td>
-			<td>color temperature n in Kelvin</td>
-		</tr>
-		<tr>
-			<td>Cnnnnnn</td>
-			<td>color temperature n between 0 and 65535</td>
-		</tr>
-		<tr>
-			<th colspan="2" style="text-align: center; padding-top: 1em; background-color: #f2f2f2;">Brightness</th>
-		</tr>
-		<tr>
-			<td>Bbbb</td>
-			<td>Brightness b between 1 and 254</td>
-		</tr>
-		<tr>
-			<td>&#37;ppp.p</td>
-			<td>Brightness p in percent between 0.0 and 100.0</td>
-		</tr>
-		<tr>
-			<th colspan="2" style="text-align: center; padding-top: 1em; background-color: #f2f2f2;">Saturation</th>
-		</tr>
-		<tr>
-			<td>Sbbb</td>
-			<td>Saturation b betreen 0 and 254</td>
-		</tr>
-		<tr>
-			<td>Vppp.p</td>
-			<td>Saturation value p in percent between 0.0 and 100.0</td>
-		</tr>
-		<tr>
-			<th colspan="2" style="text-align: center; padding-top: 1em; background-color: #f2f2f2;">Hue</th>
-		</tr>
-		<tr>
-			<td>Hnnnnnn</td>
-			<td>Hue n between 0 and 65535</td>
-		</tr>
-		<tr>
-			<td>Uppp.p</td>
-			<td>Hue p in percent between 0.0 and 100.0</td>
-		</tr>
-		<tr>
-			<th colspan="2" style="text-align: center; padding-top: 1em; background-color: #f2f2f2;">Examples</th>
-		</tr>
-		<tr>
-			<td><code>hue $RED</code></td>
-			<td>Switch on using preset <i>RED</i></td>
-		</tr>
-		<tr>
-			<td><code>hue off $RED</code></td>
-			<td>Switch off using preset <i>RED</i></td>
-		</tr>
-		<tr>
-			<td><code>hue L15 off</code></td>
-			<td>Switch lamp 15 off.</td>
-		</tr>
-		<tr>
-			<td><code>hue L15 D2.5 #000000</code></td>
-			<td>Transition lamp 15 in 2.5 sec to last state.</td>
-		</tr>
-		<tr>
-			<td><code>hue L15 M1 on</code></td>
-			<td>Transition lamp 15 in 1.5 sec to last state.</td>
-		</tr>
-		<tr>
-			<td><code>hue L15 #808080</code></td>
-			<td>Switch Lamp 15 Gray (= 50&#37; White).</td>
-		</tr>
-		<tr>
-			<td><code>hue G8 &#37;50 #FFFFFF</code></td>
-			<td>Switch group 15 to 50&#37; White (= Gray).</td>
-		</tr>
-		<tr>
-			<td><code>hue G8 M1:30 &#37;100 #C0C0C0</code></td>
-			<td>Transition group 15 in 90 sec to 100&#37; Silver (= White).</td>
-		</tr>
-	</table>
+	<hr><div class="HGCReportBug"><a class="btn btn-mini btn-info" id="HGCReportBug"><i class="fas fa-bug UICPadRight"></i>Report a bug</a></div>
 </form>
+

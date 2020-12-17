@@ -6,7 +6,7 @@ import setuptools
 plugin_identifier = "huecommands"
 plugin_package = "octoprint_%s" % plugin_identifier
 plugin_name = "OctoPrint-hueCommands"
-plugin_version = "0.2.3"
+plugin_version = "0.2.4"
 plugin_description = "Define G-Code commands that execute hue lighting."
 plugin_author = "LMS0815"
 plugin_author_email = "8235214+LMS0815@users.noreply.github.com"
