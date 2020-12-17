@@ -119,8 +119,10 @@ class hueCommands(  octoprint.plugin.StartupPlugin,
             elif cmd_id[:1]== 'T': state['transitiontime'] = min([self.parseInt(cmd_id[1:]), 0xFFFF])
             elif cmd_id[:1]== 'D': state['transitiontime'] = min([int(self.parseFloat(cmd_id[1:]) * 10 + 0.5), 0xFFFF])
             elif cmd_id[:1]== 'M':
-                time=('0:0:0:0' + str(re.sub('[^0-9.\\:]', '', cmd_id[1:])) + '.0').split('.')[0].split(':')
-                state['transitiontime'] = min([int(time[-3]) * 36000 + int(time[-2]) * 600 + int(time[-1]) * 10  + int((temp[1]+'0')[:1]), 0xFFFF])
+                tarray=('0:0:0:0' + str(re.sub('[^0-9.\\:]', '', cmd_id[1:])) + '.0').split('.')
+                seconds=tarray[0].split(':')
+                #self._logger.info('tarray: {}'.format(tarray))
+                state['transitiontime'] = min([self.parseInt(seconds[-3]) * 36000 + self.parseInt(seconds[-2]) * 600 + self.parseInt(seconds[-1]) * 100  + int(self.parseInt(tarray[1])/10), 0xFFFF])
             # Color
             elif cmd_id[:1]== '#': (state['hue'], state['sat'], state['bri']) = self.RGBtoHSV (cmd_id[1:])
             elif cmd_id[:1]== 'C': state['ct'] = min([self.parseInt(cmd_id[1:]), 0xFFFF])
