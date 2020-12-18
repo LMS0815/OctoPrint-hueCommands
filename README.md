@@ -23,6 +23,9 @@ Minor UI improvements
 * Command Syntax Help 
 
 ![Bridge](https://raw.githubusercontent.com/LMS0815/OctoPrint-hueCommands/master/screenshots/huecommands_settings_usage.png "hueCommands settings - usage")
+* Command Examples 
+
+![Examples](https://raw.githubusercontent.com/LMS0815/OctoPrint-hueCommands/master/screenshots/huecommands_settings_examples.png "hueCommands settings - examples")
 
 
 ## Setup
