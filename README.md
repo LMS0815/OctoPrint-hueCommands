@@ -16,7 +16,7 @@ Minor UI improvements
 * Control resources per command line or sidebar buttons.
 
 ![Sidebar](https://raw.githubusercontent.com/LMS0815/OctoPrint-hueCommands/master/screenshots/huecommands_settings_feature.png "hueCommands settings - sidebar")
-* Discover hue bridge.
+* Discover hue bridge (known issue with some installations).
 * Dialog to create hue user.
 
 ![Bridge](https://raw.githubusercontent.com/LMS0815/OctoPrint-hueCommands/master/screenshots/huecommands_settings_bridge.png "hueCommands settings - bridge")
