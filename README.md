@@ -8,15 +8,20 @@ Minor UI improvements
 
 ## Features
 * Configure presets with colors, assigned resources (Light and/or Groups) and timing.
+
 ![Presets](https://raw.githubusercontent.com/LMS0815/OctoPrint-hueCommands/master/screenshots/huecommands_settings_preset.png "hueCommands settings - presets")
 * Set hue resources with *GCODE* commands (e.g. Terminal window, OctoPrint **GCODE Scripts**).
+
 ![GCODE Scripts](https://raw.githubusercontent.com/LMS0815/OctoPrint-hueCommands/master/screenshots/huecommands_GCODE.png "hueCommands scripting")
 * Control resources per command line or sidebar buttons.
+
 ![Sidebar](https://raw.githubusercontent.com/LMS0815/OctoPrint-hueCommands/master/screenshots/huecommands_settings_feature.png "hueCommands settings - sidebar")
 * Discover hue bridge.
 * Dialog to create hue user.
+
 ![Bridge](https://raw.githubusercontent.com/LMS0815/OctoPrint-hueCommands/master/screenshots/huecommands_settings_bridge.png "hueCommands settings - bridge")
 * Command Syntax Help 
+
 ![Bridge](https://raw.githubusercontent.com/LMS0815/OctoPrint-hueCommands/master/screenshots/huecommands_settings_usage.png "hueCommands settings - usage")
 
 
